@@ -1,10 +1,10 @@
-FROM openjdk:8-jdk-alpine AS build
+FROM openjdk:8-jdk-alpine3.9 AS build
 
-RUN apk add --no-cache git
-RUN git clone https://github.com/spring-petclinic/spring-petclinic-rest.git
+WORKDIR /build
+COPY . /build/
 
-RUN cd spring-petclinic-rest && ./mvnw package
+RUN ./mvnw package
 
-FROM openjdk:8-jdk-alpine
-COPY --from=build spring-petclinic-rest/target/*.jar app.jar
+FROM openjdk:8-jdk-alpine3.9
+COPY --from=build /build/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
